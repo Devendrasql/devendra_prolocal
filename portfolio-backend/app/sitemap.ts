@@ -16,32 +16,27 @@ function getBaseUrl() {
 /* =========================
    SITEMAP
 ========================= */
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
 
-  /* ======================
-     Fetch public projects
-     WHY:
-     - Dynamic SEO discovery
-     - Sorted by freshness
-  ====================== */
-  const projects = await prisma.project.findMany({
-    where: {
-      // 🔒 future-proof: exclude drafts/private
-      // published: true,
-    },
-    select: {
-      id: true,
-      updatedAt: true,
-    },
-    orderBy: {
-      updatedAt: "desc",
-    },
-  });
+  let projects: { id: number; updatedAt: Date }[] = [];
 
-  /* ======================
-     Static pages
-  ====================== */
+  try {
+    projects = await prisma.project.findMany({
+      select: {
+        id: true,
+        updatedAt: true,
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+  } catch (error) {
+    console.error("Failed to fetch projects for sitemap:", error);
+  }
+
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -55,17 +50,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.9,
     },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
   ];
 
-  /* ======================
-     Dynamic project pages
-  ====================== */
   const projectPages: MetadataRoute.Sitemap = projects.map((p) => ({
     url: `${baseUrl}/projects/${p.id}`,
     lastModified: p.updatedAt,

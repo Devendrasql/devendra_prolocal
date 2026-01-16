@@ -12,6 +12,7 @@ type Project = {
   title: string;
   summary: string;
   content?: string;
+  image?: string;
   featured: boolean;
   views: number;
   createdAt?: string;
@@ -251,10 +252,23 @@ export default async function ProjectPage({
       </header>
 
       {/* ======================
+          PROJECT IMAGE
+      ====================== */}
+      {project.image && (
+        <div className="relative w-full h-[400px] rounded-xl overflow-hidden">
+          <img
+            src={project.image}
+            alt={project.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      {/* ======================
           CONTENT
       ====================== */}
       {project.content && (
-        <article className="prose prose-gray max-w-none mt-12">{project.content}</article>
+        <article className="prose prose-gray max-w-none mt-12 whitespace-pre-wrap">{project.content}</article>
       )}
 
       {/* ======================

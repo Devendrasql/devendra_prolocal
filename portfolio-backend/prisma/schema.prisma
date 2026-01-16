@@ -34,6 +34,7 @@ model Project {
   title     String
   summary   String
   content   String?
+  image     String?
   featured  Boolean  @default(false)
   views     Int      @default(0)
   createdAt DateTime @default(now())

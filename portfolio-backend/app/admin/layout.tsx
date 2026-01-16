@@ -2,12 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import {
   getAccessToken,
   clearAccessToken,
   logout,
 } from "@/lib/auth-client";
-
 
 export default function AdminLayout({
   children,
@@ -20,19 +20,8 @@ export default function AdminLayout({
   useEffect(() => {
     const token = getAccessToken();
 
-    /* =========================
-       🔒 CLIENT-SIDE ADMIN GUARD
-       =========================
-       CHANGE:
-       - Added pathname check
-
-       WHY:
-       - Prevent infinite redirect loop
-       - Allow /admin/login to be publicly accessible
-    ========================= */
-
     if (!token && pathname !== "/admin/login") {
-      clearAccessToken(); // defensive cleanup
+      clearAccessToken();
       router.replace("/admin/login");
     }
   }, [router, pathname]);
@@ -42,42 +31,70 @@ export default function AdminLayout({
     router.replace("/admin/login");
   }
 
-  /* =========================
-     WHY WE STILL RENDER UI
-     =========================
-     - Layout must always return JSX
-     - Redirect happens async in useEffect
-  ========================= */
+  const isLoginPage = pathname === "/admin/login";
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* =========================
-          Admin Header
-      ========================= */}
-      <header className="bg-white border-b px-6 py-4">
-        <h1
-          className="text-lg font-semibold cursor-pointer"
-          onClick={() => router.push("/admin")}
-        >
-          Admin Dashboard
-        </h1>
+      <header className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-8">
+              <Link href="/admin" className="text-xl font-bold hover:opacity-70 transition">
+                Admin Panel
+              </Link>
 
-      {/* Logout button */}
-      {pathname !== "/admin/login" && (
-        <button
-          onClick={handleLogout}
-          className="text-sm text-red-600 hover:underline"
-        >
-          Logout
-        </button>
-      )}
+              {!isLoginPage && (
+                <nav className="hidden md:flex items-center gap-6">
+                  <Link
+                    href="/admin"
+                    className={`text-sm font-medium transition ${
+                      pathname === "/admin"
+                        ? "text-gray-900"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/admin/projects"
+                    className={`text-sm font-medium transition ${
+                      pathname.startsWith("/admin/projects")
+                        ? "text-gray-900"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Projects
+                  </Link>
+                </nav>
+              )}
+            </div>
 
-    </header>
+            <div className="flex items-center gap-4">
+              {!isLoginPage && (
+                <>
+                  <Link
+                    href="/"
+                    target="_blank"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition"
+                  >
+                    View Site →
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-sm font-medium text-red-600 hover:text-red-700 transition"
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
 
-      {/* =========================
-          Page Content
-      ========================= */}
-  <main className="p-6">{children}</main>
-    </div >
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {children}
+      </main>
+    </div>
   );
 }
