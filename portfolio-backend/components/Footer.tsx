@@ -1,26 +1,25 @@
 import Link from "next/link";
+import DJLogo from "./DJLogo";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-32 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
+    <footer className="relative mt-24 bg-gray-900 text-white overflow-hidden">
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500 rounded-full filter blur-3xl"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500 rounded-full filter blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500 rounded-full filter blur-3xl"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="md:col-span-2">
-            <Link href="/" className="group inline-flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform shadow-lg">
-                YN
-              </div>
-              <span className="text-2xl font-bold">Your Name</span>
+            <Link href="/" className="group inline-flex items-center gap-3 mb-6">
+              <DJLogo className="w-11 h-11 group-hover:scale-105 transition-transform" />
+              <span className="text-2xl font-bold">Product Manager</span>
             </Link>
             <p className="text-gray-400 leading-relaxed max-w-md">
-              Building thoughtful software products with a focus on clarity, performance, and long-term maintainability.
+              Leading cross-functional teams to build products that solve real problems and drive measurable business impact.
             </p>
           </div>
 
@@ -28,15 +27,15 @@ export default function Footer() {
             <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <div className="flex flex-col gap-3">
               <Link href="/" className="text-gray-400 hover:text-white transition-colors inline-flex items-center gap-2 group">
-                <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-blue-500 transition-colors"></span>
+                <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-emerald-500 transition-colors"></span>
                 Home
               </Link>
               <Link href="/projects" className="text-gray-400 hover:text-white transition-colors inline-flex items-center gap-2 group">
-                <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-blue-500 transition-colors"></span>
-                Projects
+                <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-emerald-500 transition-colors"></span>
+                Case Studies
               </Link>
               <Link href="/admin/login" className="text-gray-400 hover:text-white transition-colors inline-flex items-center gap-2 group">
-                <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-blue-500 transition-colors"></span>
+                <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-emerald-500 transition-colors"></span>
                 Admin
               </Link>
             </div>
@@ -93,11 +92,11 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-400 text-sm">
-            &copy; {currentYear} Your Name. All rights reserved.
+            &copy; {currentYear} Product Manager Portfolio. Built with Next.js & Supabase.
           </p>
           <div className="flex items-center gap-6 text-sm text-gray-400">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <span className="hover:text-emerald-400 transition-colors cursor-pointer">Privacy Policy</span>
+            <span className="hover:text-emerald-400 transition-colors cursor-pointer">Terms of Service</span>
           </div>
         </div>
       </div>

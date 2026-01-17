@@ -2,23 +2,22 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import DJLogo from "./DJLogo";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link
             href="/"
-            className="group flex items-center gap-2 text-xl font-bold tracking-tight"
+            className="group flex items-center gap-3 text-lg font-bold tracking-tight"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-bold group-hover:scale-110 transition-transform">
-              YN
-            </div>
-            <span className="hidden sm:block group-hover:text-blue-600 transition-colors">
-              Your Name
+            <DJLogo className="w-9 h-9 group-hover:scale-105 transition-transform" />
+            <span className="hidden sm:block text-gray-900 group-hover:text-emerald-600 transition-colors">
+              Product Manager
             </span>
           </Link>
 
@@ -53,16 +52,16 @@ export default function Header() {
             </svg>
           </button>
 
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-1">
             <Link
               href="/projects"
-              className="px-4 py-2 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
             >
               Projects
             </Link>
             <Link
               href="/admin/login"
-              className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:shadow-lg hover:scale-105 transition-all"
+              className="ml-2 px-5 py-2 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 hover:shadow-md transition-all"
             >
               Admin
             </Link>
@@ -74,14 +73,14 @@ export default function Header() {
             <div className="flex flex-col gap-2 pt-4 border-t border-gray-200">
               <Link
                 href="/projects"
-                className="px-4 py-3 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+                className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Projects
               </Link>
               <Link
                 href="/admin/login"
-                className="px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:shadow-lg transition-all"
+                className="px-4 py-3 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-all"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Admin
