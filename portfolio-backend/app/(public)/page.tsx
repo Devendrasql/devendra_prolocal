@@ -102,6 +102,141 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="flex flex-col items-center gap-2 text-gray-400">
+            <span className="text-sm font-medium">Scroll to explore</span>
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 py-24">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="text-center space-y-2">
+            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              50+
+            </div>
+            <div className="text-sm md:text-base text-gray-600 font-medium">Projects Completed</div>
+          </div>
+          <div className="text-center space-y-2">
+            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              5+
+            </div>
+            <div className="text-sm md:text-base text-gray-600 font-medium">Years Experience</div>
+          </div>
+          <div className="text-center space-y-2">
+            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              30+
+            </div>
+            <div className="text-sm md:text-base text-gray-600 font-medium">Happy Clients</div>
+          </div>
+          <div className="text-center space-y-2">
+            <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              100%
+            </div>
+            <div className="text-sm md:text-base text-gray-600 font-medium">Client Satisfaction</div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 py-24">
+        <div className="text-center mb-16 space-y-4">
+          <h2 className="text-4xl md:text-5xl font-bold">What I Do</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Specialized in building modern web applications with cutting-edge technologies
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-white p-8 border border-gray-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full"></div>
+            <div className="relative">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Web Development</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Building responsive, performant web applications using React, Next.js, and modern JavaScript frameworks.
+              </p>
+            </div>
+          </div>
+
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-white p-8 border border-gray-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-transparent rounded-bl-full"></div>
+            <div className="relative">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-600 to-purple-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Backend Systems</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Designing scalable APIs and database architectures with Node.js, PostgreSQL, and cloud infrastructure.
+              </p>
+            </div>
+          </div>
+
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-pink-50 to-white p-8 border border-gray-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/10 to-transparent rounded-bl-full"></div>
+            <div className="relative">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-600 to-pink-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-3">UI/UX Design</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Creating beautiful, intuitive user interfaces with attention to detail and user experience best practices.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 py-24">
+        <div className="text-center mb-16 space-y-4">
+          <h2 className="text-4xl md:text-5xl font-bold">Tech Stack</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Technologies I work with to bring ideas to life
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          {[
+            { name: 'React', icon: '⚛️' },
+            { name: 'Next.js', icon: '▲' },
+            { name: 'TypeScript', icon: 'TS' },
+            { name: 'Node.js', icon: '🟢' },
+            { name: 'PostgreSQL', icon: '🐘' },
+            { name: 'Tailwind', icon: '🎨' },
+            { name: 'Docker', icon: '🐳' },
+            { name: 'AWS', icon: '☁️' },
+            { name: 'Git', icon: '📦' },
+            { name: 'GraphQL', icon: '◇' },
+            { name: 'Redis', icon: '🔴' },
+            { name: 'Prisma', icon: '⚡' },
+          ].map((tech, index) => (
+            <div
+              key={tech.name}
+              className="group relative bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <div className="text-center space-y-3">
+                <div className="text-3xl group-hover:scale-110 transition-transform">
+                  {tech.icon}
+                </div>
+                <div className="text-sm font-semibold text-gray-700 group-hover:text-blue-600 transition-colors">
+                  {tech.name}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {featured.length > 0 && (
