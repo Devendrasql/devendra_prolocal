@@ -53,12 +53,36 @@ export default function Header() {
           </button>
 
           <div className="hidden md:flex items-center gap-1">
-            <Link
-              href="/projects"
+            <a
+              href="#about"
               className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
             >
-              Projects
-            </Link>
+              About
+            </a>
+            <a
+              href="#skills"
+              className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Skills
+            </a>
+            <a
+              href="#experience"
+              className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Experience
+            </a>
+            <a
+              href="#case-studies"
+              className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Case Studies
+            </a>
+            <a
+              href="#contact"
+              className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Contact
+            </a>
             <Link
               href="/admin/login"
               className="ml-2 px-5 py-2 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 hover:shadow-md transition-all"
@@ -71,13 +95,41 @@ export default function Header() {
         {mobileMenuOpen && (
           <div className="md:hidden pb-4 animate-fade-in">
             <div className="flex flex-col gap-2 pt-4 border-t border-gray-200">
-              <Link
-                href="/projects"
+              <a
+                href="#about"
                 className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Projects
-              </Link>
+                About
+              </a>
+              <a
+                href="#skills"
+                className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Skills
+              </a>
+              <a
+                href="#experience"
+                className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Experience
+              </a>
+              <a
+                href="#case-studies"
+                className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Case Studies
+              </a>
+              <a
+                href="#contact"
+                className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </a>
               <Link
                 href="/admin/login"
                 className="px-4 py-3 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-all"
