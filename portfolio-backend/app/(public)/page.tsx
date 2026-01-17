@@ -138,22 +138,24 @@ export default async function HomePage() {
       )}
 
       {recent.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 py-24 bg-white rounded-3xl mx-4 shadow-sm">
-          <div className="space-y-2 mb-12">
-            <h2 className="text-4xl font-bold">
-              Recent Work
-            </h2>
-            <p className="text-lg text-gray-600">
-              Latest projects and experiments
-            </p>
-          </div>
+        <section className="max-w-7xl mx-auto px-4 py-24">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-3xl p-12 shadow-sm border border-gray-200/50">
+            <div className="space-y-2 mb-12">
+              <h2 className="text-4xl font-bold">
+                Recent Work
+              </h2>
+              <p className="text-lg text-gray-600">
+                Latest projects and experiments
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {recent.map((project, index) => (
-              <div key={project.id} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-                <ProjectCard project={project} />
-              </div>
-            ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {recent.map((project, index) => (
+                <div key={project.id} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+                  <ProjectCard project={project} />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
