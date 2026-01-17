@@ -1,94 +1,143 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+// app/api/blog/[slug]/route.ts
 
-function getSupabaseClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+export const runtime = "nodejs";
 
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { adminGuard } from "@/lib/adminGuard";
+
+/* =========================
+   GET BLOG POST BY SLUG (PUBLIC)
+========================= */
 export async function GET(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  try {
-    const supabase = getSupabaseClient();
-    const { slug } = await params;
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .select('*')
-      .eq('slug', slug)
-      .single();
+  const { slug } = await params;
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 404 });
-    }
+  const post = await prisma.blogPost.findUnique({
+    where: { slug },
+    include: {
+      tags: { include: { tag: true } },
+    },
+  });
 
-    await supabase
-      .from('blog_posts')
-      .update({ views: (data.views || 0) + 1 })
-      .eq('slug', slug);
-
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (error) {
+  if (!post) {
     return NextResponse.json(
-      { error: 'Failed to fetch blog post' },
-      { status: 500 }
+      { error: "Blog post not found" },
+      { status: 404 }
     );
   }
+
+  // Increment view count
+  await prisma.blogPost.update({
+    where: { slug },
+    data: { views: { increment: 1 } },
+  });
+
+  return NextResponse.json({
+    data: {
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      excerpt: post.excerpt,
+      content: post.content,
+      cover_image: post.coverImage,
+      author: post.author,
+      tags: post.tags.map((t) => t.tag.name),
+      published: post.published,
+      views: post.views + 1,
+      read_time: post.readTime,
+      created_at: post.createdAt,
+      updated_at: post.updatedAt,
+    },
+  });
 }
 
+/* =========================
+   UPDATE BLOG POST (ADMIN)
+========================= */
 export async function PUT(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const denied = await adminGuard(req);
+  if (denied) return denied;
+
+  const { slug } = await params;
+
+  let body;
   try {
-    const supabase = getSupabaseClient();
-    const { slug } = await params;
-    const body = await request.json();
-
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .update({ ...body, updated_at: new Date().toISOString() })
-      .eq('slug', slug)
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (error) {
+    body = await req.json();
+  } catch {
     return NextResponse.json(
-      { error: 'Failed to update blog post' },
-      { status: 500 }
+      { error: "Invalid JSON body" },
+      { status: 400 }
     );
   }
+
+  const {
+    title,
+    excerpt,
+    content,
+    coverImage,
+    author,
+    published,
+    readTime,
+    tags,
+  } = body;
+
+  const safeTags: string[] = Array.isArray(tags)
+    ? tags.filter((t): t is string => typeof t === "string")
+    : [];
+
+  const post = await prisma.blogPost.update({
+    where: { slug },
+    data: {
+      ...(title && { title }),
+      ...(excerpt && { excerpt }),
+      ...(content && { content }),
+      ...(coverImage !== undefined && { coverImage }),
+      ...(author && { author }),
+      ...(published !== undefined && { published }),
+      ...(readTime !== undefined && { readTime }),
+      ...(safeTags.length > 0 && {
+        tags: {
+          deleteMany: {},
+          create: safeTags.map((name) => ({
+            tag: {
+              connectOrCreate: {
+                where: { name },
+                create: { name },
+              },
+            },
+          })),
+        },
+      }),
+    },
+    include: {
+      tags: { include: { tag: true } },
+    },
+  });
+
+  return NextResponse.json({ data: post });
 }
 
+/* =========================
+   DELETE BLOG POST (ADMIN)
+========================= */
 export async function DELETE(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  try {
-    const supabase = getSupabaseClient();
-    const { slug } = await params;
-    const { error } = await supabase
-      .from('blog_posts')
-      .delete()
-      .eq('slug', slug);
+  const denied = await adminGuard(req);
+  if (denied) return denied;
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+  const { slug } = await params;
 
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to delete blog post' },
-      { status: 500 }
-    );
-  }
+  await prisma.blogPost.delete({
+    where: { slug },
+  });
+
+  return NextResponse.json({ success: true });
 }

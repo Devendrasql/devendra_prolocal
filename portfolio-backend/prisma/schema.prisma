@@ -46,9 +46,11 @@ model Project {
 }
 
 model Tag {
-  id       Int          @id @default(autoincrement())
-  name     String       @unique
-  projects ProjectTag[]
+  id          Int            @id @default(autoincrement())
+  name        String         @unique
+  projects    ProjectTag[]
+  caseStudies CaseStudyTag[]
+  blogPosts   BlogPostTag[]
 }
 
 model ProjectTag {
@@ -87,4 +89,87 @@ model RefreshToken {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model CaseStudy {
+  id         Int      @id @default(autoincrement())
+  title      String
+  slug       String   @unique
+  company    String
+  role       String
+  duration   String
+  overview   String   @db.Text
+  challenge  String   @db.Text
+  solution   String   @db.Text
+  impact     String   @db.Text
+  imageUrl   String?
+  metrics    Json?
+  featured   Boolean  @default(false)
+  published  Boolean  @default(false)
+  orderIndex Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tags CaseStudyTag[]
+}
+
+model CaseStudyTag {
+  caseStudyId Int
+  tagId       Int
+
+  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id], onDelete: Cascade)
+  tag       Tag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([caseStudyId, tagId])
+}
+
+model BlogPost {
+  id         Int      @id @default(autoincrement())
+  title      String
+  slug       String   @unique
+  excerpt    String   @db.Text
+  content    String   @db.Text
+  coverImage String?
+  author     String   @default("Admin")
+  published  Boolean  @default(false)
+  views      Int      @default(0)
+  readTime   Int      @default(5)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tags BlogPostTag[]
+}
+
+model BlogPostTag {
+  blogPostId Int
+  tagId      Int
+
+  blogPost BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([blogPostId, tagId])
+}
+
+model Testimonial {
+  id         Int      @id @default(autoincrement())
+  name       String
+  role       String
+  company    String
+  content    String   @db.Text
+  avatarUrl  String?
+  rating     Int      @default(5)
+  featured   Boolean  @default(false)
+  orderIndex Int      @default(0)
+  createdAt  DateTime @default(now())
+}
+
+model Certification {
+  id            Int      @id @default(autoincrement())
+  title         String
+  issuer        String
+  date          String
+  credentialUrl String?
+  imageUrl      String?
+  orderIndex    Int      @default(0)
+  createdAt     DateTime @default(now())
 }

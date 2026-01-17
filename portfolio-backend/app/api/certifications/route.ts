@@ -1,55 +1,97 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+// app/api/certifications/route.ts
 
-function getSupabaseClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+export const runtime = "nodejs";
+console.log("✅ /api/certifications route loaded");
+
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { adminGuard } from "@/lib/adminGuard";
+
+/* =========================
+   CREATE CERTIFICATION (ADMIN)
+========================= */
+export async function POST(req: Request) {
+  console.log("🔥 POST /api/certifications HIT");
+
+  /* ======================
+     1️⃣ Admin authorization
+  ====================== */
+  const denied = await adminGuard(req);
+  if (denied) return denied;
+
+  /* ======================
+     2️⃣ Parse JSON body SAFELY
+  ====================== */
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid JSON body" },
+      { status: 400 }
+    );
+  }
+
+  const {
+    title,
+    issuer,
+    date,
+    credentialUrl,
+    imageUrl,
+  } = body;
+
+  /* ======================
+     3️⃣ Validate required fields
+  ====================== */
+  if (!title || !issuer || !date) {
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
+  /* ======================
+     4️⃣ Create certification
+  ====================== */
+  const certification = await prisma.certification.create({
+    data: {
+      title,
+      issuer,
+      date,
+      credentialUrl,
+      imageUrl,
+    },
+  });
+
+  return NextResponse.json(certification, { status: 201 });
 }
 
+/* =========================
+   LIST CERTIFICATIONS (PUBLIC)
+========================= */
 export async function GET() {
-  try {
-    const supabase = getSupabaseClient();
-    const { data, error } = await supabase
-      .from('certifications')
-      .select('*')
-      .order('order_index', { ascending: true })
-      .order('created_at', { ascending: false });
+  /* ======================
+     5️⃣ Fetch certifications
+  ====================== */
+  const certifications = await prisma.certification.findMany({
+    orderBy: [
+      { orderIndex: "asc" },
+      { createdAt: "desc" },
+    ],
+  });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to fetch certifications' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const supabase = getSupabaseClient();
-    const body = await request.json();
-
-    const { data, error } = await supabase
-      .from('certifications')
-      .insert([body])
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ data }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to create certification' },
-      { status: 500 }
-    );
-  }
+  /* ======================
+     6️⃣ Return clean response
+  ====================== */
+  return NextResponse.json({
+    data: certifications.map((c) => ({
+      id: c.id,
+      title: c.title,
+      issuer: c.issuer,
+      date: c.date,
+      credential_url: c.credentialUrl,
+      image_url: c.imageUrl,
+      created_at: c.createdAt,
+    })),
+  });
 }

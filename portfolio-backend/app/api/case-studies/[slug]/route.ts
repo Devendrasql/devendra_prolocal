@@ -1,89 +1,149 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+// app/api/case-studies/[slug]/route.ts
 
-function getSupabaseClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+export const runtime = "nodejs";
 
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { adminGuard } from "@/lib/adminGuard";
+
+/* =========================
+   GET CASE STUDY BY SLUG (PUBLIC)
+========================= */
 export async function GET(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  try {
-    const supabase = getSupabaseClient();
-    const { slug } = await params;
-    const { data, error } = await supabase
-      .from('case_studies')
-      .select('*')
-      .eq('slug', slug)
-      .single();
+  const { slug } = await params;
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 404 });
-    }
+  const caseStudy = await prisma.caseStudy.findUnique({
+    where: { slug },
+    include: {
+      tags: { include: { tag: true } },
+    },
+  });
 
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (error) {
+  if (!caseStudy) {
     return NextResponse.json(
-      { error: 'Failed to fetch case study' },
-      { status: 500 }
+      { error: "Case study not found" },
+      { status: 404 }
     );
   }
+
+  return NextResponse.json({
+    data: {
+      id: caseStudy.id,
+      title: caseStudy.title,
+      slug: caseStudy.slug,
+      company: caseStudy.company,
+      role: caseStudy.role,
+      duration: caseStudy.duration,
+      overview: caseStudy.overview,
+      challenge: caseStudy.challenge,
+      solution: caseStudy.solution,
+      impact: caseStudy.impact,
+      image_url: caseStudy.imageUrl,
+      tags: caseStudy.tags.map((t) => t.tag.name),
+      metrics: caseStudy.metrics,
+      featured: caseStudy.featured,
+      published: caseStudy.published,
+    },
+  });
 }
 
+/* =========================
+   UPDATE CASE STUDY (ADMIN)
+========================= */
 export async function PUT(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const denied = await adminGuard(req);
+  if (denied) return denied;
+
+  const { slug } = await params;
+
+  let body;
   try {
-    const supabase = getSupabaseClient();
-    const { slug } = await params;
-    const body = await request.json();
-
-    const { data, error } = await supabase
-      .from('case_studies')
-      .update({ ...body, updated_at: new Date().toISOString() })
-      .eq('slug', slug)
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (error) {
+    body = await req.json();
+  } catch {
     return NextResponse.json(
-      { error: 'Failed to update case study' },
-      { status: 500 }
+      { error: "Invalid JSON body" },
+      { status: 400 }
     );
   }
+
+  const {
+    title,
+    company,
+    role,
+    duration,
+    overview,
+    challenge,
+    solution,
+    impact,
+    imageUrl,
+    metrics,
+    featured,
+    published,
+    tags,
+  } = body;
+
+  const safeTags: string[] = Array.isArray(tags)
+    ? tags.filter((t): t is string => typeof t === "string")
+    : [];
+
+  const caseStudy = await prisma.caseStudy.update({
+    where: { slug },
+    data: {
+      ...(title && { title }),
+      ...(company && { company }),
+      ...(role && { role }),
+      ...(duration && { duration }),
+      ...(overview && { overview }),
+      ...(challenge && { challenge }),
+      ...(solution && { solution }),
+      ...(impact && { impact }),
+      ...(imageUrl !== undefined && { imageUrl }),
+      ...(metrics !== undefined && { metrics }),
+      ...(featured !== undefined && { featured }),
+      ...(published !== undefined && { published }),
+      ...(safeTags.length > 0 && {
+        tags: {
+          deleteMany: {},
+          create: safeTags.map((name) => ({
+            tag: {
+              connectOrCreate: {
+                where: { name },
+                create: { name },
+              },
+            },
+          })),
+        },
+      }),
+    },
+    include: {
+      tags: { include: { tag: true } },
+    },
+  });
+
+  return NextResponse.json({ data: caseStudy });
 }
 
+/* =========================
+   DELETE CASE STUDY (ADMIN)
+========================= */
 export async function DELETE(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  try {
-    const supabase = getSupabaseClient();
-    const { slug } = await params;
-    const { error } = await supabase
-      .from('case_studies')
-      .delete()
-      .eq('slug', slug);
+  const denied = await adminGuard(req);
+  if (denied) return denied;
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+  const { slug } = await params;
 
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to delete case study' },
-      { status: 500 }
-    );
-  }
+  await prisma.caseStudy.delete({
+    where: { slug },
+  });
+
+  return NextResponse.json({ success: true });
 }

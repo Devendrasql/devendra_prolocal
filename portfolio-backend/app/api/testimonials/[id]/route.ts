@@ -1,89 +1,132 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+// app/api/testimonials/[id]/route.ts
 
-function getSupabaseClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+export const runtime = "nodejs";
 
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { adminGuard } from "@/lib/adminGuard";
+
+/* =========================
+   GET TESTIMONIAL BY ID (PUBLIC)
+========================= */
 export async function GET(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const supabase = getSupabaseClient();
-    const { id } = await params;
-    const { data, error } = await supabase
-      .from('testimonials')
-      .select('*')
-      .eq('id', id)
-      .single();
+  const { id } = await params;
+  const testimonialId = parseInt(id, 10);
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 404 });
-    }
-
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (error) {
+  if (isNaN(testimonialId)) {
     return NextResponse.json(
-      { error: 'Failed to fetch testimonial' },
-      { status: 500 }
+      { error: "Invalid testimonial ID" },
+      { status: 400 }
     );
   }
+
+  const testimonial = await prisma.testimonial.findUnique({
+    where: { id: testimonialId },
+  });
+
+  if (!testimonial) {
+    return NextResponse.json(
+      { error: "Testimonial not found" },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json({
+    data: {
+      id: testimonial.id,
+      name: testimonial.name,
+      role: testimonial.role,
+      company: testimonial.company,
+      content: testimonial.content,
+      avatar_url: testimonial.avatarUrl,
+      rating: testimonial.rating,
+      featured: testimonial.featured,
+    },
+  });
 }
 
+/* =========================
+   UPDATE TESTIMONIAL (ADMIN)
+========================= */
 export async function PUT(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const supabase = getSupabaseClient();
-    const { id } = await params;
-    const body = await request.json();
+  const denied = await adminGuard(req);
+  if (denied) return denied;
 
-    const { data, error } = await supabase
-      .from('testimonials')
-      .update(body)
-      .eq('id', id)
-      .select()
-      .single();
+  const { id } = await params;
+  const testimonialId = parseInt(id, 10);
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (error) {
+  if (isNaN(testimonialId)) {
     return NextResponse.json(
-      { error: 'Failed to update testimonial' },
-      { status: 500 }
+      { error: "Invalid testimonial ID" },
+      { status: 400 }
     );
   }
+
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid JSON body" },
+      { status: 400 }
+    );
+  }
+
+  const {
+    name,
+    role,
+    company,
+    content,
+    avatarUrl,
+    rating,
+    featured,
+  } = body;
+
+  const testimonial = await prisma.testimonial.update({
+    where: { id: testimonialId },
+    data: {
+      ...(name && { name }),
+      ...(role && { role }),
+      ...(company && { company }),
+      ...(content && { content }),
+      ...(avatarUrl !== undefined && { avatarUrl }),
+      ...(rating !== undefined && { rating }),
+      ...(featured !== undefined && { featured }),
+    },
+  });
+
+  return NextResponse.json({ data: testimonial });
 }
 
+/* =========================
+   DELETE TESTIMONIAL (ADMIN)
+========================= */
 export async function DELETE(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const supabase = getSupabaseClient();
-    const { id } = await params;
-    const { error } = await supabase
-      .from('testimonials')
-      .delete()
-      .eq('id', id);
+  const denied = await adminGuard(req);
+  if (denied) return denied;
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+  const { id } = await params;
+  const testimonialId = parseInt(id, 10);
 
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
+  if (isNaN(testimonialId)) {
     return NextResponse.json(
-      { error: 'Failed to delete testimonial' },
-      { status: 500 }
+      { error: "Invalid testimonial ID" },
+      { status: 400 }
     );
   }
+
+  await prisma.testimonial.delete({
+    where: { id: testimonialId },
+  });
+
+  return NextResponse.json({ success: true });
 }

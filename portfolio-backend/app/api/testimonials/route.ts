@@ -1,64 +1,116 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+// app/api/testimonials/route.ts
 
-function getSupabaseClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-}
+export const runtime = "nodejs";
+console.log("✅ /api/testimonials route loaded");
 
-export async function GET(request: NextRequest) {
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { adminGuard } from "@/lib/adminGuard";
+
+/* =========================
+   CREATE TESTIMONIAL (ADMIN)
+========================= */
+export async function POST(req: Request) {
+  console.log("🔥 POST /api/testimonials HIT");
+
+  /* ======================
+     1️⃣ Admin authorization
+  ====================== */
+  const denied = await adminGuard(req);
+  if (denied) return denied;
+
+  /* ======================
+     2️⃣ Parse JSON body SAFELY
+  ====================== */
+  let body;
   try {
-    const supabase = getSupabaseClient();
-    const { searchParams } = new URL(request.url);
-    const featured = searchParams.get('featured');
-
-    let query = supabase
-      .from('testimonials')
-      .select('*')
-      .order('order_index', { ascending: true })
-      .order('created_at', { ascending: false });
-
-    if (featured === 'true') {
-      query = query.eq('featured', true);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ data }, { status: 200 });
-  } catch (error) {
+    body = await req.json();
+  } catch {
     return NextResponse.json(
-      { error: 'Failed to fetch testimonials' },
-      { status: 500 }
+      { error: "Invalid JSON body" },
+      { status: 400 }
     );
   }
-}
 
-export async function POST(request: NextRequest) {
-  try {
-    const supabase = getSupabaseClient();
-    const body = await request.json();
+  const {
+    name,
+    role,
+    company,
+    content,
+    avatarUrl,
+    rating,
+    featured,
+  } = body;
 
-    const { data, error } = await supabase
-      .from('testimonials')
-      .insert([body])
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ data }, { status: 201 });
-  } catch (error) {
+  /* ======================
+     3️⃣ Validate required fields
+  ====================== */
+  if (!name || !role || !company || !content) {
     return NextResponse.json(
-      { error: 'Failed to create testimonial' },
-      { status: 500 }
+      { error: "Missing required fields" },
+      { status: 400 }
     );
   }
+
+  /* ======================
+     4️⃣ Create testimonial
+  ====================== */
+  const testimonial = await prisma.testimonial.create({
+    data: {
+      name,
+      role,
+      company,
+      content,
+      avatarUrl,
+      rating: rating ?? 5,
+      featured: featured ?? false,
+    },
+  });
+
+  return NextResponse.json(testimonial, { status: 201 });
+}
+
+/* =========================
+   LIST TESTIMONIALS (PUBLIC)
+========================= */
+export async function GET(req: Request) {
+  /* ======================
+     5️⃣ Parse query params
+  ====================== */
+  const { searchParams } = new URL(req.url);
+  const featured = searchParams.get("featured") === "true";
+
+  /* ======================
+     6️⃣ Build where clause
+  ====================== */
+  const where: any = {};
+  if (featured) where.featured = true;
+
+  /* ======================
+     7️⃣ Fetch testimonials
+  ====================== */
+  const testimonials = await prisma.testimonial.findMany({
+    where,
+    orderBy: [
+      { orderIndex: "asc" },
+      { createdAt: "desc" },
+    ],
+  });
+
+  /* ======================
+     8️⃣ Return clean response
+  ====================== */
+  return NextResponse.json({
+    data: testimonials.map((t) => ({
+      id: t.id,
+      name: t.name,
+      role: t.role,
+      company: t.company,
+      content: t.content,
+      avatar_url: t.avatarUrl,
+      rating: t.rating,
+      featured: t.featured,
+      created_at: t.createdAt,
+    })),
+  });
 }
