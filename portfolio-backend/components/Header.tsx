@@ -54,31 +54,31 @@ export default function Header() {
 
           <div className="hidden md:flex items-center gap-1">
             <a
-              href="#about"
+              href="/#about"
               className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
             >
               About
             </a>
-            <a
-              href="#skills"
-              className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
-            >
-              Skills
-            </a>
-            <a
-              href="#experience"
-              className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
-            >
-              Experience
-            </a>
-            <a
-              href="#case-studies"
+            <Link
+              href="/case-studies"
               className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
             >
               Case Studies
-            </a>
+            </Link>
+            <Link
+              href="/projects"
+              className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Projects
+            </Link>
+            <Link
+              href="/blog"
+              className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Blog
+            </Link>
             <a
-              href="#contact"
+              href="/#contact"
               className="px-4 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
             >
               Contact
@@ -96,35 +96,35 @@ export default function Header() {
           <div className="md:hidden pb-4 animate-fade-in">
             <div className="flex flex-col gap-2 pt-4 border-t border-gray-200">
               <a
-                href="#about"
+                href="/#about"
                 className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
               </a>
-              <a
-                href="#skills"
-                className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Skills
-              </a>
-              <a
-                href="#experience"
-                className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Experience
-              </a>
-              <a
-                href="#case-studies"
+              <Link
+                href="/case-studies"
                 className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Case Studies
-              </a>
+              </Link>
+              <Link
+                href="/projects"
+                className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Projects
+              </Link>
+              <Link
+                href="/blog"
+                className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Blog
+              </Link>
               <a
-                href="#contact"
+                href="/#contact"
                 className="px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >

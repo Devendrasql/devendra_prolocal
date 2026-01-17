@@ -114,6 +114,56 @@ export default function AdminDashboardPage() {
         />
       </div>
 
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <h2 className="text-xl font-bold mb-4">Content Management</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <ActionCard
+            title="Projects"
+            description="Manage portfolio projects"
+            href="/admin/projects"
+            icon={
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            }
+            gradient="from-blue-500 to-blue-600"
+          />
+          <ActionCard
+            title="Case Studies"
+            description="Detailed project case studies"
+            href="/admin/case-studies"
+            icon={
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            }
+            gradient="from-emerald-500 to-emerald-600"
+          />
+          <ActionCard
+            title="Blog Posts"
+            description="Write and manage articles"
+            href="/admin/blog"
+            icon={
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            }
+            gradient="from-amber-500 to-amber-600"
+          />
+          <ActionCard
+            title="Testimonials"
+            description="Client reviews & feedback"
+            href="/admin/testimonials"
+            icon={
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+            }
+            gradient="from-pink-500 to-pink-600"
+          />
+        </div>
+      </div>
+
       <ViewsChart data={data.dailyViews} />
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
@@ -193,5 +243,32 @@ function StatCard({
         <p className="text-3xl font-bold mt-2 bg-gradient-to-br from-gray-900 to-gray-700 bg-clip-text text-transparent">{value.toLocaleString()}</p>
       </div>
     </div>
+  );
+}
+
+function ActionCard({
+  title,
+  description,
+  href,
+  icon,
+  gradient,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  icon: React.ReactNode;
+  gradient: string;
+}) {
+  return (
+    <a
+      href={href}
+      className="group block p-6 bg-gray-50 rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all"
+    >
+      <div className={`inline-flex p-3 rounded-lg bg-gradient-to-br ${gradient} text-white mb-3 group-hover:scale-110 transition-transform`}>
+        {icon}
+      </div>
+      <h3 className="font-bold text-gray-900 mb-1">{title}</h3>
+      <p className="text-sm text-gray-600">{description}</p>
+    </a>
   );
 }
