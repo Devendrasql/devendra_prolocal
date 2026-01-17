@@ -7,24 +7,16 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link
-            href="/"
-            className="group flex items-center gap-2 text-xl font-bold tracking-tight"
-          >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-bold group-hover:scale-110 transition-transform">
-              YN
-            </div>
-            <span className="hidden sm:block group-hover:text-blue-600 transition-colors">
-              Your Name
-            </span>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      <nav className="max-w-6xl mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-70 transition">
+            Your Name
           </Link>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="md:hidden p-2"
             aria-label="Toggle menu"
           >
             <svg
@@ -35,8 +27,6 @@ export default function Header() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="transition-transform"
-              style={{ transform: mobileMenuOpen ? 'rotate(90deg)' : 'none' }}
             >
               {mobileMenuOpen ? (
                 <>
@@ -53,35 +43,29 @@ export default function Header() {
             </svg>
           </button>
 
-          <div className="hidden md:flex items-center gap-2">
-            <Link
-              href="/projects"
-              className="px-4 py-2 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
-            >
+          <div className="hidden md:flex items-center gap-8">
+            <Link href="/projects" className="text-sm font-medium hover:opacity-70 transition">
               Projects
             </Link>
-            <Link
-              href="/admin/login"
-              className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:shadow-lg hover:scale-105 transition-all"
-            >
+            <Link href="/admin/login" className="text-sm font-medium hover:opacity-70 transition">
               Admin
             </Link>
           </div>
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden pb-4 animate-fade-in">
-            <div className="flex flex-col gap-2 pt-4 border-t border-gray-200">
+          <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
+            <div className="flex flex-col gap-4">
               <Link
                 href="/projects"
-                className="px-4 py-3 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+                className="text-sm font-medium hover:opacity-70 transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Projects
               </Link>
               <Link
                 href="/admin/login"
-                className="px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:shadow-lg transition-all"
+                className="text-sm font-medium hover:opacity-70 transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Admin
