@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { adminFetch } from "@/lib/admin-api";
 
 type Testimonial = {
   id: string;
@@ -21,7 +22,7 @@ export default function TestimonialsAdminPage() {
     role: "",
     company: "",
     content: "",
-    avatar_url: "",
+    avatarUrl: "",
     rating: 5,
     featured: false,
   });
@@ -41,20 +42,41 @@ export default function TestimonialsAdminPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch("/api/testimonials", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-    setShowForm(false);
-    setFormData({ name: "", role: "", company: "", content: "", avatar_url: "", rating: 5, featured: false });
-    fetchTestimonials();
+
+    try {
+      const res = await adminFetch("/api/testimonials", {
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setShowForm(false);
+        setFormData({ name: "", role: "", company: "", content: "", avatarUrl: "", rating: 5, featured: false });
+        fetchTestimonials();
+      } else {
+        alert("Failed to create testimonial");
+      }
+    } catch (error) {
+      alert("Error creating testimonial");
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this testimonial?")) return;
-    await fetch(`/api/testimonials/${id}`, { method: "DELETE" });
-    fetchTestimonials();
+
+    try {
+      const res = await adminFetch(`/api/testimonials/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        fetchTestimonials();
+      } else {
+        alert("Failed to delete testimonial");
+      }
+    } catch (error) {
+      alert("Error deleting testimonial");
+    }
   };
 
   if (loading) {
@@ -82,7 +104,7 @@ export default function TestimonialsAdminPage() {
             <input type="text" placeholder="Name" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="px-4 py-2 border rounded-lg" />
             <input type="text" placeholder="Role" required value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })} className="px-4 py-2 border rounded-lg" />
             <input type="text" placeholder="Company" required value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} className="px-4 py-2 border rounded-lg" />
-            <input type="url" placeholder="Avatar URL" value={formData.avatar_url} onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })} className="px-4 py-2 border rounded-lg" />
+            <input type="url" placeholder="Avatar URL" value={formData.avatarUrl} onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })} className="px-4 py-2 border rounded-lg" />
           </div>
           <textarea placeholder="Testimonial content" required rows={4} value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} className="w-full px-4 py-2 border rounded-lg" />
           <div className="flex gap-4">

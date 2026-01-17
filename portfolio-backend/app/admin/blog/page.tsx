@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { adminFetch } from "@/lib/admin-api";
 
 type BlogPost = {
   id: string;
@@ -28,8 +29,20 @@ export default function BlogAdminPage() {
 
   const handleDelete = async (slug: string) => {
     if (!confirm("Delete this blog post?")) return;
-    await fetch(`/api/blog/${slug}`, { method: "DELETE" });
-    setPosts((prev) => prev.filter((p) => p.slug !== slug));
+
+    try {
+      const res = await adminFetch(`/api/blog/${slug}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setPosts((prev) => prev.filter((p) => p.slug !== slug));
+      } else {
+        alert("Failed to delete blog post");
+      }
+    } catch (error) {
+      alert("Failed to delete blog post");
+    }
   };
 
   if (loading) {

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { adminFetch } from "@/lib/admin-api";
 
 type CaseStudy = {
   id: string;
@@ -31,8 +32,15 @@ export default function CaseStudiesAdminPage() {
     if (!confirm("Are you sure you want to delete this case study?")) return;
 
     try {
-      await fetch(`/api/case-studies/${slug}`, { method: "DELETE" });
-      setCaseStudies((prev) => prev.filter((cs) => cs.slug !== slug));
+      const res = await adminFetch(`/api/case-studies/${slug}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setCaseStudies((prev) => prev.filter((cs) => cs.slug !== slug));
+      } else {
+        alert("Failed to delete case study");
+      }
     } catch (error) {
       alert("Failed to delete case study");
     }

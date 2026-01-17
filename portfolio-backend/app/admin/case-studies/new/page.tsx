@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { adminFetch } from "@/lib/admin-api";
 
 export default function NewCaseStudyPage() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function NewCaseStudyPage() {
     challenge: "",
     solution: "",
     impact: "",
-    image_url: "",
+    imageUrl: "",
     tags: "",
     featured: false,
     published: false,
@@ -32,9 +33,8 @@ export default function NewCaseStudyPage() {
         tags: formData.tags.split(",").map((t) => t.trim()).filter(Boolean),
       };
 
-      const res = await fetch("/api/case-studies", {
+      const res = await adminFetch("/api/case-studies", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
@@ -145,8 +145,8 @@ export default function NewCaseStudyPage() {
               </label>
               <input
                 type="url"
-                value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                value={formData.imageUrl}
+                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
